@@ -6,6 +6,7 @@ pyocrを使用して、食品ラベルのkcal部分を読み取る
 """
 import sys
 import csv
+import datetime
 
 from PIL import Image
 import pyocr
@@ -21,7 +22,7 @@ if len(tools) == 0:
     print("No OCR tool found")
     sys.exit(1)
 
-# 使用する画像のpathをlistdictに格納する
+# 使用する画像のpathをlistに格納する
 data = [
     "images/01.png",
     "images/02.png",
@@ -30,21 +31,46 @@ data = [
     "images/05.png",
 ]
 
-# 空のリスト
-result = []
+# 本日日付を取得
+today = datetime.date.today()
+today = str(today)
+
+# 03.pngが読み込めないので、リサイズして挑戦(拡大)
+img03 = Image.open(data[2])
+resize_img03 = img03.resize((500, 400))
+resize_img03.save("images/03_new.png")
+data[2] = "images/03_new.png"
+
+# 合計変数
+sum = 0
 
 # 画像の解析結果を格納
 for text in data:
+    if text == "images/03_new.png":
+        continue
+    # print(text)
+    # print(type(text))
     img = Image.open(text)
     # 分析
     num = tool.image_to_string(
         img,
-        lang="eng",
-        builder=pyocr.builders.TextBuilder(),
+        lang="jpn",
+        builder=pyocr.builders.DigitBuilder(),
     )
-    result += num
-    print(result)
+
+    num = int(num)
+    print(num)
+    print(type(num))
+    sum += num
+print(sum)
+
 
 # Textへの書込み
 with open("text.txt", mode="w") as f:
-    f.writelines(result)
+    f.writelines(str(sum))
+
+
+# Textを読込、結果を出力
+with open("text.txt", mode="r") as f:
+    result = f.read()
+    print(today + "の摂取カロリーは" + result + "kcalです。")
