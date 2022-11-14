@@ -7,6 +7,7 @@ pyocrを使用して、食品ラベルのkcal部分を読み取る
 import sys
 import csv
 import datetime
+import os
 
 from PIL import Image
 import pyocr
@@ -15,12 +16,14 @@ import pyocr.builders
 
 # オブジェクトの生成
 tools = pyocr.get_available_tools()
-# tesseractを格納
-tool = tools[0]
 # 読み込んだ画像に文字列が無い場合、エラーを返す
 if len(tools) == 0:
     print("No OCR tool found")
     sys.exit(1)
+
+# tesseractを格納
+tool = tools[0]
+
 
 # 使用する画像のpathをlistに格納する
 data = [
@@ -30,6 +33,10 @@ data = [
     "images/04.png",
     "images/05.png",
 ]
+# data = os.listdir("images")
+# print(data)
+# print(type(data))
+
 
 # 本日日付を取得
 today = datetime.date.today()
