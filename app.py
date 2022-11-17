@@ -5,6 +5,7 @@ pyocrを使用して、食品ラベルのkcal部分を読み取る
 「◯/◯/◯(実行した日の年月日)の摂取カロリーは◯◯kcalです。」と表示
 """
 import datetime
+import glob
 import sys
 
 from PIL import Image
@@ -30,13 +31,16 @@ builder = pyocr.builders.DigitBuilder(tesseract_layout=6)
 today = str(datetime.date.today())
 
 # 使用する画像のpathをlistに格納する
-data = [
-    "images/01.png",
-    "images/02.png",
-    "images/03.png",
-    "images/04.png",
-    "images/05.png",
-]
+data = []
+image_dir = glob.glob("./images/*")
+data = image_dir
+# data = [
+#     "images/01.png",
+#     "images/02.png",
+#     "images/03.png",
+#     "images/04.png",
+#     "images/05.png",
+# ]
 
 
 def reading_calculation(data, lang, builder):
